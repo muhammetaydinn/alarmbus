@@ -13,6 +13,19 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   Position? currentPosition;
   @override
+  void initState() {
+    super.initState();
+    getCurrentLocation();
+  }
+
+  Future<void> getCurrentLocation() async {
+    currentPosition = await _determinePosition();
+    setState(() {
+      currentPosition = currentPosition;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     print("currentPosition: $currentPosition");
     return Scaffold(
@@ -31,6 +44,21 @@ class _MapScreenState extends State<MapScreen> {
             urlTemplate:
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // For demonstration only
             userAgentPackageName: "com.example.alarmbus",
+          ),
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: LatLng(
+                  currentPosition?.latitude ?? 51.509364,
+                  currentPosition?.longitude ?? -0.128928,
+                ),
+                child: Icon(
+                  Icons.my_location_outlined,
+                  color: Colors.red,
+                  size: 40,
+                ),
+              ),
+            ],
           ),
         ],
       ),
